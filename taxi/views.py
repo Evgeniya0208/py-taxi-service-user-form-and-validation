@@ -4,9 +4,13 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.http import require_POST
+from django.contrib.auth import get_user_model
 
+from .forms import DriverCreationForm
 from .models import Driver, Car, Manufacturer
 
+
+User = get_user_model()
 
 @login_required
 def index(request):
@@ -33,7 +37,8 @@ def index(request):
 @require_POST
 def assign_me_to_car(request, pk: int):
     car = get_object_or_404(Car, pk=pk)
-    car.drivers.add(request.user)
+    user = User.objects.get(pk=request.user.pk)
+    car.drivers.add(user)
     return redirect("taxi:car-detail", pk=car.pk)
 
 
@@ -41,9 +46,9 @@ def assign_me_to_car(request, pk: int):
 @require_POST
 def delete_me_from_car(request, pk: int):
     car = get_object_or_404(Car, pk=pk)
-    car.drivers.remove(request.user)
+    user = User.objects.get(pk=request.user.pk)
+    car.drivers.remove(user)
     return redirect("taxi:car-detail", pk=car.pk)
-
 
 class ManufacturerListView(LoginRequiredMixin, generic.ListView):
     model = Manufacturer
@@ -108,7 +113,7 @@ class DriverDetailView(LoginRequiredMixin, generic.DetailView):
 
 class DriverCreateView(LoginRequiredMixin, generic.CreateView):
     model = Driver
-    fields = "__all__"
+    form_class = DriverCreationForm
     success_url = reverse_lazy("taxi:driver-list")
 
 

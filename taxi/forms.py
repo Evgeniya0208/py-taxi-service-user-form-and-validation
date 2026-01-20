@@ -21,7 +21,7 @@ def validate_license(value: str) -> str:
 
 
 class DriverCreationForm(UserCreationForm):
-    class Meta(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
         model = User
         fields = ("username", "first_name", "last_name", "license_number", "password1", "password2")
 
