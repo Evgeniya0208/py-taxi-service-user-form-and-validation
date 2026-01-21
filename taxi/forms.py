@@ -43,7 +43,7 @@ class DriverLicenseUpdateForm(forms.ModelForm):
 class CarForm(forms.ModelForm):
     class Meta:
         model = Car
-        fields = ("model", "manufacturer", "drivers")  # або твої поля
+        fields = ("model", "manufacturer", "drivers")
         widgets = {
             "drivers": forms.CheckboxSelectMultiple(),
         }
